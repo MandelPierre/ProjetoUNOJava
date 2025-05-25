@@ -1,7 +1,7 @@
 import javax.swing.JFrame;
 
-public class Container extends JFrame {
-    public Container() {
+public class Janela extends JFrame {
+    public Janela() {
         add(new Fase());
         setTitle("UNO");
         setSize(1024,728);
@@ -12,6 +12,6 @@ public class Container extends JFrame {
     }
     
     public static void main(String[] args) {
-        new Container();
+        new Janela();
     }
 }
