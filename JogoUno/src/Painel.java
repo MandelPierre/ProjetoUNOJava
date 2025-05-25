@@ -4,11 +4,11 @@ import javax.swing.JPanel;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-public class Fase extends JPanel {
+public class Painel extends JPanel {
 
     private Image fundo;
     
-    public Fase() {
+    public Painel() {
         ImageIcon referencia = new ImageIcon("res\\Colorground.png");
         fundo = referencia.getImage(); 
     }

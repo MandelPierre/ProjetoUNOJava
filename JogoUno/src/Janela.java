@@ -2,7 +2,7 @@ import javax.swing.JFrame;
 
 public class Janela extends JFrame {
     public Janela() {
-        add(new Fase());
+        add(new Painel());
         setTitle("UNO");
         setSize(1024,728);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
