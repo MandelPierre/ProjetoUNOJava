@@ -13,9 +13,11 @@ public class Painel extends JPanel {
         fundo = referencia.getImage(); 
     }
 
-    public void paint(Graphics g) {
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
         Graphics2D graficos = (Graphics2D) g;
-        graficos.drawImage(fundo, 0, 0, null);
-        g.dispose(); 
+        graficos.drawImage(fundo, 0, 0, this);
+
+        // Aqui desenharemos as cartas futuramente
     }
 }
