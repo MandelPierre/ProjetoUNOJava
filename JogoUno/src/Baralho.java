@@ -1,49 +1,50 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
+// Classe que representa o Baralho
 public class Baralho {
-    private ArrayList <Carta> cartas;
+    
+    // Lista de cartas
+    private final ArrayList<Carta> cartas;
 
-    //Construtor Cria e embaralha o baralho
+    // Construtor: cria o baralho e já embaralha
     public Baralho() {
         cartas = new ArrayList<>();
-        inicializarBaralho();
-        embaralhar();
+        inicializarBaralho(); // Cria todas as cartas
+        embaralhar();        // Embaralha o baralho
     }
 
-    //Método que cria todas as cartas do baralho
+    // Método que cria todas as cartas
     private void inicializarBaralho() {
-        String[] cores = {"Vermelho", "Verde", "Amarelo", "Azul"};
-        String[] valores = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+2", "Reverso", "Bloqueio"};
+        // Cores possíveis
+        String[] cores = {"Vermelho", "Verde", "Azul", "Amarelo"};
+        // Valores possíveis
+        String[] valores = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+2", "Reverse", "Bloqueio"};
 
-        //Para cada cor, cria todas cartas possíveis
-        for(String cor : cores) {
+        // Para cada cor e cada valor, cria as cartas
+        for (String cor : cores) {
             for (String valor : valores) {
-                cartas.add(new Carta(cor, valor));
-                //No UNO, quase todas as cartas são duplicadas, menos o 0
+                cartas.add(new Carta(cor, valor)); // 1 carta
                 if (!valor.equals("0")) {
-                    cartas.add(new Carta(cor, valor));
+                    cartas.add(new Carta(cor, valor)); // +1 carta (total 2)
                 }
             }
         }
 
-        //Coringas e +4 (sem cor): 4 "Coringa" e 4 "+4"
+        // Adiciona os coringas e +4 (sem cor)
         for (int i = 0; i < 4; i++) {
             cartas.add(new Carta("Preto", "Coringa"));
             cartas.add(new Carta("Preto", "+4"));
         }
     }
 
-    //Método para embaralhar as cartas
-    public void embaralhar() {
+    // Método que embaralha o baralho
+    private void embaralhar() {
         Collections.shuffle(cartas);
     }
 
-    //Método para comprar uma carta do baralho
-    public Carta comprarCarta(){
-        if(!cartas.isEmpty()) {
-            return cartas.remove(0);
-        }
-        return null; //Se não tiver cartas
+    // Método para comprar a carta do topo do baralho
+    public Carta comprarCarta() {
+        return cartas.remove(0);
     }
 }

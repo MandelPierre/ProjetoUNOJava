@@ -1,39 +1,40 @@
 import java.util.ArrayList;
 
+// Classe que representa um Jogador
 public class Jogador {
+    
+    // Atributos: nome do jogador e a mão de cartas
     private String nome;
     private ArrayList<Carta> mao;
 
-    //Construtor cria o jogador com nome e mão vazia
+    // Construtor
     public Jogador(String nome) {
         this.nome = nome;
-        this.mao = new ArrayList<>();
-    }
-    
-    //Método para comprar uma carta
-    public void comprarCarta(Baralho baralho) {
-        Carta carta = baralho.comprarCarta();
-        if (carta != null) {
-            mao.add(carta);
-            System.out.println(nome + " comprou: " + carta);
-        } else {
-            System.out.println("O baralho esta vazio");
-        }
+        mao = new ArrayList<>();
     }
 
-    //Método para jogar uma carta da mão
-    public Carta jogarCarta(int indice) {
-        if(indice >= 0 && indice < mao.size()) {
-            return mao.remove(indice);
-        }
-        return null;
+    // Método para adicionar carta à mão
+    public void adicionarCarta(Carta carta) {
+        mao.add(carta);
     }
-    
-    //Mostrar a mão do jogador
-    
-    // Verifica se o jogador ficou sem cartas (venceu)
-    
-    // Getter do nome
 
-    // Getter da mão (para lógicas futuras, se quiser)
+    // Método para remover carta da mão
+    public void removerCarta(Carta carta) {
+        mao.remove(carta);
+    }
+
+    // Getter: retorna todas as cartas da mão
+    public ArrayList<Carta> getMao() {
+        return mao;
+    }
+
+    // Getter: retorna o nome do jogador
+    public String getNome() {
+        return nome;
+    }
+
+    // Método para verificar se o jogador venceu
+    public boolean venceu() {
+        return mao.isEmpty();
+    }
 }

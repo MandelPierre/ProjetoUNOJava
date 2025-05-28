@@ -1,4 +1,4 @@
-import javax.swing.JFrame;
+/*import javax.swing.JFrame;
 
 public class Janela extends JFrame {
     public Janela() {
@@ -15,3 +15,4 @@ public class Janela extends JFrame {
         new Janela();
     }
 }
+*/
