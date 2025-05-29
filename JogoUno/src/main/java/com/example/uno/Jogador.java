@@ -1,39 +1,39 @@
 import java.util.ArrayList;
 
-// Representa um jogador (humano ou bot) no jogo de Uno
+// Classe que representa um Jogador
 public class Jogador {
-    // Nome do jogador (ex.: "Você" ou "Bot")
+    
+    // Atributos: nome do jogador e a mão de cartas
     private String nome;
-    // Lista de cartas na mão do jogador
     private ArrayList<Carta> mao;
 
-    // Construtor: inicializa o jogador com um nome e uma mão vazia
+    // Construtor
     public Jogador(String nome) {
         this.nome = nome;
         mao = new ArrayList<>();
     }
 
-    // Adiciona uma carta à mão do jogador
+    // Método para adicionar carta à mão
     public void adicionarCarta(Carta carta) {
         mao.add(carta);
     }
 
-    // Remove uma carta da mão do jogador
+    // Método para remover carta da mão
     public void removerCarta(Carta carta) {
         mao.remove(carta);
     }
 
-    // Retorna a lista de cartas na mão
+    // Getter: retorna todas as cartas da mão
     public ArrayList<Carta> getMao() {
         return mao;
     }
 
-    // Retorna o nome do jogador
+    // Getter: retorna o nome do jogador
     public String getNome() {
         return nome;
     }
 
-    // Verifica se o jogador venceu (mão vazia)
+    // Método para verificar se o jogador venceu
     public boolean venceu() {
         return mao.isEmpty();
     }
