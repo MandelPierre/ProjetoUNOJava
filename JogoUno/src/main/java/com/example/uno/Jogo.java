@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 
 // Classe principal do jogo

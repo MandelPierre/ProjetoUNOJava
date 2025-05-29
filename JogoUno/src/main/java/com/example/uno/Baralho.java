@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -45,9 +46,11 @@ public class Baralho {
 
     // Método para comprar a carta do topo do baralho
     public Carta comprarCarta() {
-        return cartas.remove(0);
-        System.out.println("O baralho está vazio! Não há mais cartas para comprar.");
+        if(cartas.isEmpty()) {
+            System.out.println("O baralho está vazio! Não há mais cartas para comprar.");
         return null;
+        }
+        return cartas.remove(0);
     }
-    return cartas.remove(0);
+    
 }

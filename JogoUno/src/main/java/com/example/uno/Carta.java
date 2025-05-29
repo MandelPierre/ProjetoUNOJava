@@ -1,3 +1,4 @@
+
 public class Carta {
     private String cor; //Vermelho, Azul, Amarelo, Verde
     private String valor; //0-9, +2, +4, reverse, bloqueio, coringa
