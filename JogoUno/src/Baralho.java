@@ -45,9 +45,14 @@ public class Baralho {
 
     // Método para comprar a carta do topo do baralho
     public Carta comprarCarta() {
-        return cartas.remove(0);
+        if (cartas.isEmpty()) {
         System.out.println("O baralho está vazio! Não há mais cartas para comprar.");
         return null;
-    }
+        }
     return cartas.remove(0);
+    }
+
+    public boolean isVazio() {
+        return cartas.isEmpty();
+    }
 }
