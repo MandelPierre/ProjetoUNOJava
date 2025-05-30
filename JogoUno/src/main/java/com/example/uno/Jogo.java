@@ -1,6 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.ArrayList;
 
 // Classe principal do jogo com interface gráfica
@@ -52,8 +52,27 @@ public class Jogo {
         frame = new JFrame("Jogo de UNO");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 600);
+        frame.setMinimumSize(new Dimension(800, 600)); // Define tamanho mínimo
         frame.setLayout(new BorderLayout());
-        frame.getContentPane().setBackground(new Color(0, 100, 0)); // Fundo verde (mesa)
+
+        // Painel principal com background
+        JPanel backgroundPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                File bgFile = new File("imagens/background.png");
+                if (bgFile.exists()) {
+                    ImageIcon bgIcon = new ImageIcon(bgFile.getPath());
+                    g.drawImage(bgIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
+                } else {
+                    g.setColor(new Color(0, 100, 0)); // Fundo verde padrão
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                    System.err.println("Imagem de background não encontrada: " + bgFile.getAbsolutePath());
+                }
+            }
+        };
+        backgroundPanel.setLayout(new BorderLayout());
+        frame.setContentPane(backgroundPanel);
 
         // Painel da mesa (centro)
         mesaPanel = new JPanel();
@@ -61,10 +80,17 @@ public class Jogo {
         mesaPanel.setLayout(new BoxLayout(mesaPanel, BoxLayout.Y_AXIS));
 
         // Botão de compra
-        comprarButton = new JButton("Comprar");
-        comprarButton.setBackground(Color.DARK_GRAY);
-        comprarButton.setForeground(Color.WHITE);
-        comprarButton.setPreferredSize(new Dimension(80, 120));
+        File versoFile = new File("imagens/verso.png");
+        if (versoFile.exists()) {
+            comprarButton = new JButton(new ImageIcon(versoFile.getPath()));
+        } else {
+            comprarButton = new JButton("Comprar");
+            comprarButton.setBackground(Color.DARK_GRAY);
+            comprarButton.setForeground(Color.WHITE);
+            System.err.println("Imagem verso.png não encontrada: " + versoFile.getAbsolutePath());
+        }
+        comprarButton.setPreferredSize(new Dimension(100, 160));
+        comprarButton.setMaximumSize(new Dimension(100, 160));
         comprarButton.addActionListener(e -> comprarCarta());
 
         // Atualiza a mesa
@@ -82,46 +108,64 @@ public class Jogo {
         maoBotPanel.setLayout(new FlowLayout());
         atualizarMaoBot();
 
-        // Rótulo para mensagens
+        // Rótulo para mensagens (menor)
         mensagemLabel = new JLabel("Bem-vindo ao UNO!");
-        mensagemLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        mensagemLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Fonte menor
         mensagemLabel.setForeground(Color.WHITE);
-        mensagemLabel.setBackground(new Color(0, 0, 0, 100));
+        mensagemLabel.setBackground(new Color(0, 0, 0, 150));
         mensagemLabel.setOpaque(true);
-        mensagemLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mensagemLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Menos preenchimento
+        mensagemLabel.setPreferredSize(new Dimension(200, 40)); // Largura fixa
 
         // Adiciona os painéis à janela
-        frame.add(maoBotPanel, BorderLayout.NORTH);
-        frame.add(mesaPanel, BorderLayout.CENTER);
-        frame.add(maoJogadorPanel, BorderLayout.SOUTH);
-        frame.add(mensagemLabel, BorderLayout.WEST);
+        backgroundPanel.add(maoBotPanel, BorderLayout.NORTH);
+        backgroundPanel.add(mesaPanel, BorderLayout.CENTER);
+        backgroundPanel.add(maoJogadorPanel, BorderLayout.SOUTH);
+        backgroundPanel.add(mensagemLabel, BorderLayout.WEST);
 
         frame.setVisible(true);
     }
 
     // Cria um componente visual para uma carta
     private JComponent criarComponenteCarta(Carta carta, boolean verso) {
-        JButton cartaButton = new JButton();
-        cartaButton.setPreferredSize(new Dimension(80, 120));
+        JLabel cartaLabel = new JLabel();
+        cartaLabel.setPreferredSize(new Dimension(100, 160));
+        cartaLabel.setMaximumSize(new Dimension(100, 160));
         if (verso) {
-            cartaButton.setText("Verso");
-            cartaButton.setBackground(Color.DARK_GRAY);
-            cartaButton.setForeground(Color.WHITE);
-        } else {
-            Color corFundo;
-            switch (carta.getCor()) {
-                case "Vermelho": corFundo = Color.RED; break;
-                case "Verde": corFundo = Color.GREEN; break;
-                case "Azul": corFundo = Color.BLUE; break;
-                case "Amarelo": corFundo = Color.YELLOW; break;
-                case "Preto": corFundo = Color.BLACK; break;
-                default: corFundo = Color.GRAY;
+            File versoFile = new File("imagens/verso.png");
+            if (versoFile.exists()) {
+                cartaLabel.setIcon(new ImageIcon(versoFile.getPath()));
+            } else {
+                cartaLabel.setText("Verso");
+                cartaLabel.setBackground(Color.DARK_GRAY);
+                cartaLabel.setForeground(Color.WHITE);
+                cartaLabel.setOpaque(true);
+                cartaLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                System.err.println("Imagem verso.png não encontrada: " + versoFile.getAbsolutePath());
             }
-            cartaButton.setText("<html>" + carta.getValor() + "<br>" + carta.getCor() + "</html>");
-            cartaButton.setBackground(corFundo);
-            cartaButton.setForeground(corFundo == Color.YELLOW ? Color.BLACK : Color.WHITE);
+        } else {
+            File imagemFile = new File(carta.getImagem());
+            if (imagemFile.exists()) {
+                cartaLabel.setIcon(new ImageIcon(imagemFile.getPath()));
+            } else {
+                Color corFundo;
+                switch (carta.getCor()) {
+                    case "Vermelho": corFundo = Color.RED; break;
+                    case "Verde": corFundo = Color.GREEN; break;
+                    case "Azul": corFundo = Color.BLUE; break;
+                    case "Amarelo": corFundo = Color.YELLOW; break;
+                    case "Preto": corFundo = Color.BLACK; break;
+                    default: corFundo = Color.GRAY;
+                }
+                cartaLabel.setText("<html>" + carta.getValor() + "<br>" + carta.getCor() + "</html>");
+                cartaLabel.setBackground(corFundo);
+                cartaLabel.setForeground(corFundo == Color.YELLOW ? Color.BLACK : Color.WHITE);
+                cartaLabel.setOpaque(true);
+                cartaLabel.setHorizontalAlignment(SwingConstants.CENTER);
+                System.err.println("Imagem não encontrada: " + imagemFile.getAbsolutePath());
+            }
         }
-        return cartaButton;
+        return cartaLabel;
     }
 
     // Atualiza a mesa com a carta atual
@@ -132,15 +176,18 @@ public class Jogo {
             return;
         }
 
+        // Painel para a carta da mesa (fixa o tamanho)
+        JPanel cartaMesaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        cartaMesaPanel.setOpaque(false);
         JComponent cartaMesa = criarComponenteCarta(cartaAtual, false);
-        cartaMesa.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cartaMesaPanel.add(cartaMesa);
 
         JPanel controlesPanel = new JPanel();
         controlesPanel.setOpaque(false);
         controlesPanel.add(comprarButton);
 
         mesaPanel.add(Box.createVerticalGlue());
-        mesaPanel.add(cartaMesa);
+        mesaPanel.add(cartaMesaPanel);
         mesaPanel.add(Box.createVerticalStrut(10));
         mesaPanel.add(controlesPanel);
         mesaPanel.add(Box.createVerticalGlue());
@@ -153,9 +200,14 @@ public class Jogo {
     private void atualizarMaoJogador() {
         maoJogadorPanel.removeAll();
         for (Carta carta : jogador.getMao()) {
-            JButton cartaButton = (JButton) criarComponenteCarta(carta, false);
-            cartaButton.addActionListener(e -> jogarCartaJogador(carta));
-            maoJogadorPanel.add(cartaButton);
+            JComponent cartaComponent = criarComponenteCarta(carta, false);
+            cartaComponent.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    jogarCartaJogador(carta);
+                }
+            });
+            maoJogadorPanel.add(cartaComponent);
         }
         maoJogadorPanel.revalidate();
         maoJogadorPanel.repaint();
@@ -211,7 +263,7 @@ public class Jogo {
             atualizarInterface();
             turnoBot();
         } else {
-            exibirMensagem("Jogada inválida! A carta deve combinar com a cor ou valor da mesa.");
+            exibirMensagem("Jogada inválida!");
         }
     }
 

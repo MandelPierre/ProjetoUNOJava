@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 // Classe que representa uma Carta no jogo
 public class Carta {
     
@@ -19,6 +21,11 @@ public class Carta {
     // Getter para obter o valor da carta
     public String getValor() {
         return valor;
+    }
+
+    // Retorna o caminho da imagem da carta
+    public String getImagem() {
+        return "imagens/" + cor + "_" + valor + ".png";
     }
 
     // Método toString sobrescrito: como a carta será exibida quando imprimir
