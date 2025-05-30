@@ -89,8 +89,8 @@ public class Jogo {
             comprarButton.setForeground(Color.WHITE);
             System.err.println("Imagem verso.png não encontrada: " + versoFile.getAbsolutePath());
         }
-        comprarButton.setPreferredSize(new Dimension(100, 160));
-        comprarButton.setMaximumSize(new Dimension(100, 160));
+        comprarButton.setPreferredSize(new Dimension(80, 120));
+        comprarButton.setMaximumSize(new Dimension(80, 120));
         comprarButton.addActionListener(e -> comprarCarta());
 
         // Atualiza a mesa
@@ -129,8 +129,8 @@ public class Jogo {
     // Cria um componente visual para uma carta
     private JComponent criarComponenteCarta(Carta carta, boolean verso) {
         JLabel cartaLabel = new JLabel();
-        cartaLabel.setPreferredSize(new Dimension(100, 160));
-        cartaLabel.setMaximumSize(new Dimension(100, 160));
+        cartaLabel.setPreferredSize(new Dimension(80, 120));
+        cartaLabel.setMaximumSize(new Dimension(80, 120));
         if (verso) {
             File versoFile = new File("imagens/verso.png");
             if (versoFile.exists()) {
