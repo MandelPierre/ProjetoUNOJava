@@ -4,21 +4,18 @@ import java.util.Collections;
 // Classe que representa o Baralho
 public class Baralho {
     
-    // Lista de cartas
     private ArrayList<Carta> cartas;
 
     // Construtor: cria o baralho e já embaralha
     public Baralho() {
         cartas = new ArrayList<>();
-        inicializarBaralho(); // Cria todas as cartas
-        embaralhar();        // Embaralha o baralho
+        inicializarBaralho();
+        embaralhar();
     }
 
     // Método que cria todas as cartas
     private void inicializarBaralho() {
-        // Cores possíveis
         String[] cores = {"Vermelho", "Verde", "Azul", "Amarelo"};
-        // Valores possíveis
         String[] valores = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "+2", "Reverse", "Bloqueio"};
 
         // Para cada cor e cada valor, cria as cartas

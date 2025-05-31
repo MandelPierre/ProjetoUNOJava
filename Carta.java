@@ -3,7 +3,6 @@ import java.util.ArrayList;
 // Classe que representa uma Carta no jogo
 public class Carta {
     
-    // Atributos: cor e valor da carta
     private String cor;
     private String valor;
 
@@ -28,7 +27,7 @@ public class Carta {
         return "imagens/" + cor + "_" + valor + ".png";
     }
 
-    // Método toString sobrescrito: como a carta será exibida quando imprimir
+    // Método toString: como a carta será exibida quando imprimir
     @Override
     public String toString() {
         return cor + " " + valor;

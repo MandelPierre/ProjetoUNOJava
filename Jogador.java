@@ -3,11 +3,9 @@ import java.util.ArrayList;
 // Classe que representa um Jogador
 public class Jogador {
     
-    // Atributos: nome do jogador e a mão de cartas
     private String nome;
     private ArrayList<Carta> mao;
 
-    // Construtor
     public Jogador(String nome) {
         this.nome = nome;
         mao = new ArrayList<>();
