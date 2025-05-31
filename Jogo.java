@@ -268,7 +268,12 @@ public class Jogo {
                 return;
             }
             atualizarInterface();
-            turnoBot();
+            // Adiciona um delay antes do turno do bot
+            Timer timer = new Timer(800, e -> {
+                turnoBot();
+            });
+            timer.setRepeats(false); // Executa apenas uma vez
+            timer.start();
         } else {
             exibirMensagem("Jogada inválida!");
             System.out.println("DEBUG: Jogada inválida para: " + formatarCarta(carta));
@@ -284,8 +289,8 @@ public class Jogo {
             return;
         }
         if (bot.venceu()) {
-            exibirMensagem("O bot venceu!");
-            JOptionPane.showMessageDialog(frame, "O bot venceu!");
+            exibirMensagem("O Bot venceu!");
+            JOptionPane.showMessageDialog(frame, "O Bot venceu!");
             frame.dispose();
             return;
         }
@@ -423,15 +428,24 @@ public class Jogo {
             String corEscolhida = cores[(int)(Math.random() * 4)];
             exibirMensagem("Bot escolheu a cor: " + corEscolhida);
             System.out.println("DEBUG: Bot escolheu a cor: " + corEscolhida);
-            cartaAtual = new Carta(corEscolhida, cartaAtual.getValor());
-            atualizarInterface();
+            setCor(corEscolhida);
         }
     }
 
-    // Define a nova cor
+    // Define a nova cor e atualiza a imagem da carta
     private void setCor(String cor) {
         System.out.println("DEBUG: Definindo nova cor: " + cor);
-        cartaAtual = new Carta(cor, cartaAtual.getValor());
+        String valor = cartaAtual.getValor(); // Mantém o valor ("Coringa" ou "+4")
+        cartaAtual = new Carta(cor, valor); // Cria uma nova carta com a cor escolhida
+        // Atualiza a imagem com base na nova cor
+        String novaImagem = "imagens/" + cor + "_" + valor + ".png";
+        File imagemFile = new File(novaImagem);
+        if (imagemFile.exists()) {
+            cartaAtual.setImagem(novaImagem);
+            System.out.println("DEBUG: Imagem atualizada para: " + novaImagem);
+        } else {
+            System.err.println("Imagem não encontrada: " + novaImagem);
+        }
         exibirMensagem("Nova cor: " + formatarCarta(cartaAtual));
         atualizarInterface();
     }
