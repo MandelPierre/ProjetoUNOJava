@@ -251,6 +251,7 @@ public class Jogo {
 
     // Ação de jogar uma carta pelo jogador
     private void jogarCartaJogador(Carta carta) {
+        System.out.println("DEBUG: Tentando jogar carta: " + formatarCarta(carta));
         if (bloquearProximo) {
             exibirMensagem("Você foi bloqueado e não pode jogar!");
             bloquearProximo = false;
@@ -258,6 +259,7 @@ public class Jogo {
             return;
         }
         if (podeJogar(carta)) {
+            System.out.println("DEBUG: Carta válida, chamando jogarCarta");
             jogarCarta(jogador, carta);
             if (jogador.venceu()) {
                 exibirMensagem("Você venceu!");
@@ -269,6 +271,7 @@ public class Jogo {
             turnoBot();
         } else {
             exibirMensagem("Jogada inválida!");
+            System.out.println("DEBUG: Jogada inválida para: " + formatarCarta(carta));
         }
     }
 
@@ -314,14 +317,17 @@ public class Jogo {
 
     // Verifica se uma carta pode ser jogada
     private boolean podeJogar(Carta carta) {
-        return carta.getCor().equals(cartaAtual.getCor()) ||
-               carta.getValor().equals(cartaAtual.getValor()) ||
-               carta.getCor().equals("Preto");
+        boolean podeJogar = carta.getCor().equals(cartaAtual.getCor()) ||
+                            carta.getValor().equals(cartaAtual.getValor()) ||
+                            carta.getCor().equals("Preto");
+        System.out.println("DEBUG: podeJogar para " + formatarCarta(carta) + " contra " + formatarCarta(cartaAtual) + ": " + podeJogar);
+        return podeJogar;
     }
 
     // Joga uma carta e aplica seus efeitos
     private void jogarCarta(Jogador jogadorAtual, Carta carta) {
         exibirMensagem(jogadorAtual.getNome() + " jogou: " + formatarCarta(carta));
+        System.out.println("DEBUG: " + jogadorAtual.getNome() + " jogou: " + formatarCarta(carta));
         jogadorAtual.removerCarta(carta);
         cartaAtual = carta;
         aplicarEfeito(carta, jogadorAtual);
@@ -329,6 +335,7 @@ public class Jogo {
 
     // Aplica os efeitos de cartas especiais
     private void aplicarEfeito(Carta carta, Jogador jogadorAtual) {
+        System.out.println("DEBUG: Aplicando efeito para: " + formatarCarta(carta));
         Jogador adversario = (jogadorAtual == jogador) ? bot : jogador;
         if (carta.getValor().equals("+2")) {
             for (int i = 0; i < 2; i++) {
@@ -348,8 +355,10 @@ public class Jogo {
                 }
             }
             exibirMensagem(adversario.getNome() + " comprou 4 cartas!");
+            System.out.println("DEBUG: Chamando escolherCor para +4");
             escolherCor(jogadorAtual);
         } else if (carta.getValor().equals("Coringa")) {
+            System.out.println("DEBUG: Chamando escolherCor para Coringa");
             escolherCor(jogadorAtual);
         } else if (carta.getValor().equals("Reverse")) {
             exibirMensagem("Reverse jogado, mas como são só dois jogadores, é como pular a vez.");
@@ -361,9 +370,14 @@ public class Jogo {
 
     // Permite escolher a cor após Coringa ou +4
     private void escolherCor(Jogador jogadorAtual) {
+        System.out.println("DEBUG: escolherCor chamado para jogador: " + jogadorAtual.getNome());
         if (jogadorAtual == jogador) {
-            JPanel corPanel = new JPanel();
-            corPanel.setOpaque(false);
+            System.out.println("DEBUG: Exibindo botões de escolha de cor para o jogador humano");
+            JDialog dialog = new JDialog(frame, "Escolha uma cor", true);
+            dialog.setLayout(new FlowLayout());
+            dialog.setSize(300, 150);
+            dialog.setLocationRelativeTo(frame);
+
             JButton vermelho = new JButton("Vermelho");
             JButton verde = new JButton("Verde");
             JButton azul = new JButton("Azul");
@@ -376,22 +390,39 @@ public class Jogo {
             verde.setForeground(Color.WHITE);
             azul.setForeground(Color.WHITE);
             amarelo.setForeground(Color.BLACK);
-            vermelho.addActionListener(e -> setCor("Vermelho"));
-            verde.addActionListener(e -> setCor("Verde"));
-            azul.addActionListener(e -> setCor("Azul"));
-            amarelo.addActionListener(e -> setCor("Amarelo"));
-            corPanel.add(vermelho);
-            corPanel.add(verde);
-            corPanel.add(azul);
-            corPanel.add(amarelo);
-            mesaPanel.removeAll();
-            mesaPanel.add(corPanel);
-            mesaPanel.revalidate();
-            mesaPanel.repaint();
+
+            vermelho.addActionListener(e -> {
+                System.out.println("DEBUG: Cor escolhida: Vermelho");
+                setCor("Vermelho");
+                dialog.dispose();
+            });
+            verde.addActionListener(e -> {
+                System.out.println("DEBUG: Cor escolhida: Verde");
+                setCor("Verde");
+                dialog.dispose();
+            });
+            azul.addActionListener(e -> {
+                System.out.println("DEBUG: Cor escolhida: Azul");
+                setCor("Azul");
+                dialog.dispose();
+            });
+            amarelo.addActionListener(e -> {
+                System.out.println("DEBUG: Cor escolhida: Amarelo");
+                setCor("Amarelo");
+                dialog.dispose();
+            });
+
+            dialog.add(vermelho);
+            dialog.add(verde);
+            dialog.add(azul);
+            dialog.add(amarelo);
+            dialog.setVisible(true);
+            System.out.println("DEBUG: Botões exibidos no dialog");
         } else {
             String[] cores = {"Vermelho", "Verde", "Azul", "Amarelo"};
             String corEscolhida = cores[(int)(Math.random() * 4)];
             exibirMensagem("Bot escolheu a cor: " + corEscolhida);
+            System.out.println("DEBUG: Bot escolheu a cor: " + corEscolhida);
             cartaAtual = new Carta(corEscolhida, cartaAtual.getValor());
             atualizarInterface();
         }
@@ -399,6 +430,7 @@ public class Jogo {
 
     // Define a nova cor
     private void setCor(String cor) {
+        System.out.println("DEBUG: Definindo nova cor: " + cor);
         cartaAtual = new Carta(cor, cartaAtual.getValor());
         exibirMensagem("Nova cor: " + formatarCarta(cartaAtual));
         atualizarInterface();
@@ -408,16 +440,7 @@ public class Jogo {
     private String formatarCarta(Carta carta) {
         String cor = carta.getCor();
         String valor = carta.getValor();
-        String simboloCor;
-        switch (cor) {
-            case "Vermelho": simboloCor = "❤️"; break;
-            case "Verde": simboloCor = "💚"; break;
-            case "Azul": simboloCor = "💙"; break;
-            case "Amarelo": simboloCor = "💛"; break;
-            case "Preto": simboloCor = "🖤"; break;
-            default: simboloCor = "❓";
-        }
-        return simboloCor + " " + cor + " " + valor;
+        return cor + " " + valor;
     }
 
     // Exibe uma mensagem
