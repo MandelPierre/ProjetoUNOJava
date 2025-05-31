@@ -375,7 +375,7 @@ public class Jogo {
             System.out.println("DEBUG: Exibindo botões de escolha de cor para o jogador humano");
             JDialog dialog = new JDialog(frame, "Escolha uma cor", true);
             dialog.setLayout(new FlowLayout());
-            dialog.setSize(300, 150);
+            dialog.setSize(230, 130);
             dialog.setLocationRelativeTo(frame);
 
             JButton vermelho = new JButton("Vermelho");
