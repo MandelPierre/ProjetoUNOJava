@@ -96,11 +96,16 @@ public class Jogo {
         // Atualiza a mesa
         atualizarMesa();
 
-        // Painel da mão do jogador (inferior)
+        // Painel da mão do jogador (inferior) com FlowLayout e JScrollPane
         maoJogadorPanel = new JPanel();
         maoJogadorPanel.setOpaque(false);
-        maoJogadorPanel.setLayout(new FlowLayout());
+        maoJogadorPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 2, 5)); // Centralizado, espaçamento horizontal de 2, vertical de 5
         atualizarMaoJogador();
+        JScrollPane scrollPane = new JScrollPane(maoJogadorPanel);
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER); // Desativa a rolagem vertical
 
         // Painel da mão do bot (superior)
         maoBotPanel = new JPanel();
@@ -120,7 +125,7 @@ public class Jogo {
         // Adiciona os painéis à janela
         backgroundPanel.add(maoBotPanel, BorderLayout.NORTH);
         backgroundPanel.add(mesaPanel, BorderLayout.CENTER);
-        backgroundPanel.add(maoJogadorPanel, BorderLayout.SOUTH);
+        backgroundPanel.add(scrollPane, BorderLayout.SOUTH); // Adiciona o JScrollPane no lugar do maoJogadorPanel
         backgroundPanel.add(mensagemLabel, BorderLayout.WEST);
 
         frame.setVisible(true);
@@ -143,7 +148,7 @@ public class Jogo {
                 cartaLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 System.err.println("Imagem verso.png não encontrada: " + versoFile.getAbsolutePath());
             }
-        } else {
+        } else if (carta != null) {
             File imagemFile = new File(carta.getImagem());
             if (imagemFile.exists()) {
                 cartaLabel.setIcon(new ImageIcon(imagemFile.getPath()));
