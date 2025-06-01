@@ -30,14 +30,21 @@ public class Jogo {
             bot.adicionarCarta(baralho.comprarCarta());
         }
 
-        // Define a primeira carta da mesa, evitando cartas especiais
+        // Define a primeira carta da mesa, evitando cartas especiais (incluindo FazoL)
         cartaAtual = baralho.comprarCarta();
         while (cartaAtual != null && (cartaAtual.getValor().equals("Coringa") ||
                 cartaAtual.getValor().equals("+4") ||
                 cartaAtual.getValor().equals("+2") ||
                 cartaAtual.getValor().equals("Reverse") ||
-                cartaAtual.getValor().equals("Bloqueio"))) {
-            cartaAtual = baralho.comprarCarta();
+                cartaAtual.getValor().equals("Bloqueio") ||
+                cartaAtual.getValor().equals("FazoL"))) {
+            if (baralho.tamanho() > 0) {
+                baralho.adicionarCarta(cartaAtual); // Devolve a carta ao baralho
+                cartaAtual = baralho.comprarCarta();
+            } else {
+                System.err.println("Erro: Baralho vazio ao tentar evitar carta especial!");
+                break; // Sai do loop se o baralho ficar vazio
+            }
         }
         if (cartaAtual == null) {
             System.err.println("Erro: Baralho vazio ao iniciar a mesa!");
@@ -268,12 +275,18 @@ public class Jogo {
                 return;
             }
             atualizarInterface();
-            // Adiciona um delay antes do turno do bot
-            Timer timer = new Timer(800, e -> {
-                turnoBot();
-            });
-            timer.setRepeats(false); // Executa apenas uma vez
-            timer.start();
+            // O jogador humano joga novamente se a carta for Bloqueio ou Reverse
+            if (carta.getValor().equals("Bloqueio") || carta.getValor().equals("Reverse")) {
+                exibirMensagem("Você joga novamente!");
+                // Não chama turnoBot(), permitindo que o jogador continue
+            } else {
+                // Apenas passa o turno para o bot se não for Bloqueio ou Reverse
+                Timer timer = new Timer(800, e -> {
+                    turnoBot();
+                });
+                timer.setRepeats(false); // Executa apenas uma vez
+                timer.start();
+            }
         } else {
             exibirMensagem("Jogada inválida!");
             System.out.println("DEBUG: Jogada inválida para: " + formatarCarta(carta));
@@ -366,14 +379,69 @@ public class Jogo {
             System.out.println("DEBUG: Chamando escolherCor para Coringa");
             escolherCor(jogadorAtual);
         } else if (carta.getValor().equals("Reverse")) {
-            exibirMensagem("Reverse jogado, mas como são só dois jogadores, é como pular a vez.");
+            // Reverse funciona como Bloqueio para 2 jogadores
+            exibirMensagem("Reverse jogado! O próximo perde a vez!");
+            // Se quem jogou foi o bot, ele joga novamente
+            if (jogadorAtual == bot) {
+                exibirMensagem("Bot joga novamente!");
+                Timer timer = new Timer(800, e -> {
+                    System.out.println("DEBUG: Iniciando novo turno do bot após Reverse");
+                    turnoBot();
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
+            // Se quem jogou foi o jogador humano, ele pode jogar novamente (lógica no jogarCartaJogador)
         } else if (carta.getValor().equals("Bloqueio")) {
             exibirMensagem("Bloqueio jogado, o próximo perde a vez!");
-            bloquearProximo = true;
+            // Se quem jogou foi o bot, ele joga novamente
+            if (jogadorAtual == bot) {
+                exibirMensagem("Bot joga novamente!");
+                Timer timer = new Timer(800, e -> {
+                    System.out.println("DEBUG: Iniciando novo turno do bot após Bloqueio");
+                    turnoBot();
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
+            // Se quem jogou foi o jogador humano, ele pode jogar novamente (lógica no jogarCartaJogador)
+        } else if (carta.getValor().equals("FazoL")) {
+            System.out.println("DEBUG: Iniciando efeito FazoL para " + jogadorAtual.getNome());
+            // Efeito do FazoL: rouba todas as cartas com efeito bom do adversário
+            ArrayList<Carta> cartasRoubadas = new ArrayList<>();
+            ArrayList<Carta> maoAdversario = new ArrayList<>(adversario.getMao()); // Cópia para evitar ConcurrentModificationException
+            System.out.println("DEBUG: Mão do adversário (" + adversario.getNome() + ") tem " + maoAdversario.size() + " cartas");
+            for (Carta c : maoAdversario) {
+                String valor = c.getValor();
+                System.out.println("DEBUG: Verificando carta do adversário: " + formatarCarta(c));
+                if (valor.equals("Coringa") || valor.equals("+4") || valor.equals("+2") ||
+                    valor.equals("Bloqueio") || valor.equals("Reverse")) {
+                    System.out.println("DEBUG: Carta com efeito encontrada: " + formatarCarta(c));
+                    cartasRoubadas.add(c);
+                    adversario.removerCarta(c);
+                    jogadorAtual.adicionarCarta(c);
+                }
+            }
+            if (cartasRoubadas.isEmpty()) {
+                exibirMensagem(adversario.getNome() + " não tinha cartas com efeitos para roubar!");
+                System.out.println("DEBUG: Nenhuma carta com efeito encontrada para roubar");
+            } else {
+                StringBuilder mensagem = new StringBuilder(jogadorAtual.getNome() + " roubou do " + adversario.getNome() + ": ");
+                for (Carta c : cartasRoubadas) {
+                    mensagem.append(formatarCarta(c)).append(", ");
+                }
+                // Remove a última vírgula e espaço
+                mensagem.setLength(mensagem.length() - 2);
+                exibirMensagem(mensagem.toString());
+                System.out.println("DEBUG: Cartas roubadas: " + mensagem.toString());
+            }
+            // Adiciona escolha de cor para o FazoL
+            System.out.println("DEBUG: Chamando escolherCor para FazoL");
+            escolherCor(jogadorAtual);
         }
     }
 
-    // Permite escolher a cor após Coringa ou +4
+    // Permite escolher a cor após Coringa, +4 ou FazoL
     private void escolherCor(Jogador jogadorAtual) {
         System.out.println("DEBUG: escolherCor chamado para jogador: " + jogadorAtual.getNome());
         if (jogadorAtual == jogador) {
@@ -435,7 +503,7 @@ public class Jogo {
     // Define a nova cor e atualiza a imagem da carta
     private void setCor(String cor) {
         System.out.println("DEBUG: Definindo nova cor: " + cor);
-        String valor = cartaAtual.getValor(); // Mantém o valor ("Coringa" ou "+4")
+        String valor = cartaAtual.getValor(); // Mantém o valor ("Coringa", "+4" ou "FazoL")
         cartaAtual = new Carta(cor, valor); // Cria uma nova carta com a cor escolhida
         // Atualiza a imagem com base na nova cor
         String novaImagem = "imagens/" + cor + "_" + valor + ".png";
