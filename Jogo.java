@@ -13,7 +13,8 @@ public class Jogo {
     private JPanel maoJogadorPanel; // Painel para a mão do jogador
     private JPanel maoBotPanel;     // Painel para a mão do bot
     private JPanel mesaPanel;       // Painel para a carta atual
-    private JLabel mensagemLabel;   // Rótulo para mensagens
+    private JPanel mensagemPanel;   // Painel para a mensagem (substitui JLabel)
+    private JLabel mensagemLabel;   // Rótulo dentro do painel de mensagem
     private JButton comprarButton;  // Botão para comprar carta
     private boolean bloquearProximo; // Indica se o próximo turno será bloqueado
 
@@ -87,26 +88,25 @@ public class Jogo {
         mesaPanel.setLayout(new BoxLayout(mesaPanel, BoxLayout.Y_AXIS));
 
         // Botão de compra
-        File versoFile = new File("imagens/verso.png");
+        File versoFile = new File("imagens/comprar.png");
         if (versoFile.exists()) {
             comprarButton = new JButton(new ImageIcon(versoFile.getPath()));
         } else {
             comprarButton = new JButton("Comprar");
             comprarButton.setBackground(Color.DARK_GRAY);
             comprarButton.setForeground(Color.WHITE);
-            System.err.println("Imagem verso.png não encontrada: " + versoFile.getAbsolutePath());
+            System.err.println("Imagem comprar.png não encontrada: " + versoFile.getAbsolutePath());
         }
-        comprarButton.setPreferredSize(new Dimension(80, 120));
-        comprarButton.setMaximumSize(new Dimension(80, 120));
+        comprarButton.setPreferredSize(new Dimension(98, 139));
+        comprarButton.setMaximumSize(new Dimension(98, 139));
         comprarButton.addActionListener(e -> comprarCarta());
 
-        // Atualiza a mesa
         atualizarMesa();
 
         // Painel da mão do jogador (inferior) com FlowLayout e JScrollPane
         maoJogadorPanel = new JPanel();
         maoJogadorPanel.setOpaque(false);
-        maoJogadorPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 2, 5)); // Centralizado, espaçamento horizontal de 2, vertical de 5
+        maoJogadorPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 2, 5));
         atualizarMaoJogador();
         JScrollPane scrollPane = new JScrollPane(maoJogadorPanel);
         scrollPane.setOpaque(false);
@@ -114,26 +114,38 @@ public class Jogo {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER); // Desativa a rolagem vertical
 
-        // Painel da mão do bot (superior)
+        // Painel da mão do bot
         maoBotPanel = new JPanel();
         maoBotPanel.setOpaque(false);
         maoBotPanel.setLayout(new FlowLayout());
         atualizarMaoBot();
 
-        // Rótulo para mensagens (menor)
+        // Painel para mensagens (substitui JLabel direto)
+        mensagemPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(0, 0, 0)); // Fundo preto
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 10, 10); // Cantos arredondados (raio 10)
+            }
+        };
+        mensagemPanel.setOpaque(false); // Para permitir o desenho personalizado
+        mensagemPanel.setLayout(new BorderLayout());
+        mensagemPanel.setPreferredSize(new Dimension(270, 25)); // Altura reduzida para 25 pixels
+
         mensagemLabel = new JLabel("Bem-vindo ao UNO!");
-        mensagemLabel.setFont(new Font("Arial", Font.BOLD, 14)); // Fonte menor
-        mensagemLabel.setForeground(Color.WHITE);
-        mensagemLabel.setBackground(new Color(0, 0, 0, 150));
-        mensagemLabel.setOpaque(true);
-        mensagemLabel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Menos preenchimento
-        mensagemLabel.setPreferredSize(new Dimension(200, 40)); // Largura fixa
+        mensagemLabel.setFont(new Font("Arial", Font.BOLD, 16)); // Fonte reduzida
+        mensagemLabel.setForeground(Color.WHITE); // Texto branco
+        mensagemLabel.setHorizontalAlignment(SwingConstants.CENTER); // Centraliza o texto
+        mensagemPanel.add(mensagemLabel, BorderLayout.CENTER);
 
         // Adiciona os painéis à janela
         backgroundPanel.add(maoBotPanel, BorderLayout.NORTH);
         backgroundPanel.add(mesaPanel, BorderLayout.CENTER);
-        backgroundPanel.add(scrollPane, BorderLayout.SOUTH); // Adiciona o JScrollPane no lugar do maoJogadorPanel
-        backgroundPanel.add(mensagemLabel, BorderLayout.WEST);
+        backgroundPanel.add(scrollPane, BorderLayout.SOUTH); // Adiciona o JScrollPane
+        backgroundPanel.add(mensagemPanel, BorderLayout.WEST);
 
         frame.setVisible(true);
     }

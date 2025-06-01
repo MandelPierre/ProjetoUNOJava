@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 // Classe que representa uma Carta no jogo
 public class Carta {
     
