@@ -28,7 +28,7 @@ public class Jogo {
         jogadorGritouGol = false;
         botGritouGol = false;
 
-        // Cada jogador compra 7 cartas no começo
+        //Cada jogador ganha 7 cartas no começo
         for (int i = 0; i < 7; i++) {
             jogador.adicionarCarta(baralho.comprarCarta());
             bot.adicionarCarta(baralho.comprarCarta());
