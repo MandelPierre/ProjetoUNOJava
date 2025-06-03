@@ -329,6 +329,7 @@ public class Jogo {
                 return;
             }
             atualizarInterface();
+
             //O jogador humano joga novamente se a carta for Bloqueio ou Reverse
             if (carta.getValor().equals("Bloqueio") || carta.getValor().equals("Reverse")) {
                 exibirMensagem("Você joga novamente!");
@@ -406,6 +407,7 @@ public class Jogo {
         atualizarMesa();
         atualizarMaoJogador();
         atualizarMaoBot();
+        
         //Habilita o botão gritar GOL se o jogador tiver exatamente 2 cartas
         gritarButton.setEnabled(jogador.getMao().size() == 2 && !jogadorGritouGol);
     }
