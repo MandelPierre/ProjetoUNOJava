@@ -1,7 +1,7 @@
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class Jogo {
     private Baralho baralho;
@@ -16,12 +16,17 @@ public class Jogo {
     private JLabel mensagemLabel;   //Rótulo dentro do painel de mensagem
     private JButton comprarButton;  //Botão para comprar carta
     private boolean bloquearProximo; //Indica se o próximo turno será bloqueado
+    private JButton gritarButton;    //Botão para gritar gol
+    private boolean jogadorGritouGol;
+    private boolean botGritouGol;
 
     public Jogo() {
         baralho = new Baralho();
         jogador = new Jogador("Você");
         bot = new Jogador("Bot");
         bloquearProximo = false;
+        jogadorGritouGol = false;
+        botGritouGol = false;
 
         // Cada jogador compra 7 cartas no começo
         for (int i = 0; i < 7; i++) {
@@ -82,6 +87,24 @@ public class Jogo {
         mesaPanel.setOpaque(false);
         mesaPanel.setLayout(new BoxLayout(mesaPanel, BoxLayout.Y_AXIS));
 
+        //Botão de Gritar GOL
+        File botaoFile = new File("imagens/gritarGol.png");
+        if (botaoFile.exists()) {
+            gritarButton = new JButton(new ImageIcon(botaoFile.getPath()));
+        } else {
+            gritarButton = new JButton("Gritar GOL");
+            gritarButton.setBackground(Color.BLACK);
+            gritarButton.setForeground(Color.WHITE);
+        }
+        gritarButton.setPreferredSize(new Dimension(120, 60));
+        gritarButton.setMaximumSize(new Dimension(120, 60));
+        gritarButton.setEnabled(false);
+        gritarButton.addActionListener(e -> {
+            jogadorGritouGol = true;
+            exibirMensagem("Você gritou GOL!");
+            gritarButton.setEnabled(false);
+        });
+
         //Botão de compra
         File versoFile = new File("imagens/comprar.png");
         if (versoFile.exists()) {
@@ -122,13 +145,12 @@ public class Jogo {
                 Graphics2D g2 = (Graphics2D) g;
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(new Color(0, 0, 0)); //Fundo preto
-                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 10, 10); //Cantos arredondados (raio 10)
+                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 50, 50); //Cantos arredondados (raio 10)
             }
         };
         mensagemPanel.setOpaque(false); //Para permitir o desenho personalizado
         mensagemPanel.setLayout(new BorderLayout());
-        mensagemPanel.setPreferredSize(new Dimension(270, 25)); //Altura reduzida para 25 pixels
-
+        mensagemPanel.setPreferredSize(new Dimension(270, 200));
         mensagemLabel = new JLabel("Bem-vindo ao GOL!");
         mensagemLabel.setFont(new Font("Dialog", Font.BOLD, 18)); //Fonte reduzida
         mensagemLabel.setForeground(Color.WHITE); //Texto branco
@@ -140,6 +162,20 @@ public class Jogo {
         backgroundPanel.add(mesaPanel, BorderLayout.CENTER);
         backgroundPanel.add(scrollPane, BorderLayout.SOUTH); //Adiciona o JScrollPane
         backgroundPanel.add(mensagemPanel, BorderLayout.WEST);
+
+        // Painel auxiliar para conter o mensagemPanel e evitar que o BorderLayout estique
+        JPanel mensagemWrapper = new JPanel(new GridBagLayout());
+        mensagemWrapper.setOpaque(false); // Fundo transparente
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.anchor = GridBagConstraints.CENTER; // Centraliza horizontalmente
+        gbc.fill = GridBagConstraints.NONE; // Não estica o componente
+        mensagemWrapper.add(mensagemPanel, gbc);
+        mensagemWrapper.add(mensagemPanel);
+
+        // Adiciona os painéis à janela
+        backgroundPanel.add(mensagemWrapper, BorderLayout.WEST); // Adiciona o wrapper ao invés do mensagemPanel diretamente
 
         frame.setVisible(true);
     }
@@ -201,6 +237,7 @@ public class Jogo {
         JPanel controlesPanel = new JPanel();
         controlesPanel.setOpaque(false);
         controlesPanel.add(comprarButton);
+        controlesPanel.add(gritarButton);
 
         mesaPanel.add(Box.createVerticalGlue());
         mesaPanel.add(cartaMesaPanel);
@@ -269,7 +306,22 @@ public class Jogo {
             return;
         }
         if (podeJogar(carta)) {
+            boolean tinhaDuasCartas = jogador.getMao().size() == 2;
             jogarCarta(jogador, carta);
+
+            //Verifica se o jogador ficou com 1 carta e não gritou GOL
+            if(tinhaDuasCartas && !jogadorGritouGol) {
+                exibirMensagem("Você não gritou GOL! Penalidade +2 cartas!");
+                for (int i = 0; i < 2; i++) {
+                    Carta nova = baralho.comprarCarta();
+                    if(nova != null) {
+                        jogador.adicionarCarta(nova);
+                        exibirMensagem("Você Comprou: " + formatarCarta(nova));
+                    }
+                }
+            }
+            jogadorGritouGol = false; //Para resetar
+
             if (jogador.venceu()) {
                 exibirMensagem("Você venceu!");
                 JOptionPane.showMessageDialog(frame, "Você venceu!");
@@ -309,9 +361,31 @@ public class Jogo {
             return;
         }
         exibirMensagem("Turno do bot...");
+
+        //Verifica se o bot tem 2 cartas e decide se grita GOL
+        if(bot.getMao().size() == 2 && !botGritouGol) {
+            if(Math.random() < 0.6) { //60% de chance do bot gritar GOL
+                botGritouGol = true;
+                exibirMensagem("Bot Gritou GOL!");
+            }
+        }
         for (Carta c : bot.getMao()) {
             if (podeJogar(c)) {
+                boolean tinhaDuasCartas = bot.getMao().size() == 2;
                 jogarCarta(bot, c);
+
+                //Verifica se o bot ficou com 1 carta e não gritou GOL
+                if(tinhaDuasCartas && !botGritouGol) {
+                    exibirMensagem("Bot não gritou GOL! Penalidade +2 cartas!");
+                    for (int i = 0; i < 2; i++) {
+                        Carta nova = baralho.comprarCarta();
+                        if(nova != null) {
+                            bot.adicionarCarta(nova);
+                            exibirMensagem("Bot comprou: " + formatarCarta(nova));
+                        } 
+                    }
+                }
+                botGritouGol = false; //Para resetar
                 atualizarInterface();
                 return;
             }
@@ -332,6 +406,8 @@ public class Jogo {
         atualizarMesa();
         atualizarMaoJogador();
         atualizarMaoBot();
+        //Habilita o botão gritar GOL se o jogador tiver exatamente 2 cartas
+        gritarButton.setEnabled(jogador.getMao().size() == 2 && !jogadorGritouGol);
     }
 
     //Verifica se uma carta pode ser jogada
