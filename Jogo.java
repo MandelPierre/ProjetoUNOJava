@@ -129,7 +129,7 @@ public class Jogo {
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER); // Desativa a rolagem vertical
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER); //Desativa a rolagem vertical
 
         //Painel da mão do bot
         maoBotPanel = new JPanel();
@@ -137,7 +137,7 @@ public class Jogo {
         maoBotPanel.setLayout(new FlowLayout());
         atualizarMaoBot();
 
-        //Painel para mensagens (substitui JLabel direto)
+        //Painel para mensagens
         mensagemPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -365,7 +365,7 @@ public class Jogo {
 
         //Verifica se o bot tem 2 cartas e decide se grita GOL
         if(bot.getMao().size() == 2 && !botGritouGol) {
-            if(Math.random() < 0.6) { //60% de chance do bot gritar GOL
+            if(Math.random() < 0.3) { //30% de chance do bot gritar GOL
                 botGritouGol = true;
                 exibirMensagem("Bot Gritou GOL!");
             }
