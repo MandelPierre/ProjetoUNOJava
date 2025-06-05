@@ -176,32 +176,11 @@ public class Jogo {
             File versoFile = new File("imagens/verso.png");
             if (versoFile.exists()) {
                 cartaLabel.setIcon(new ImageIcon(versoFile.getPath()));
-            } else {
-                cartaLabel.setText("Verso");
-                cartaLabel.setBackground(Color.DARK_GRAY);
-                cartaLabel.setForeground(Color.WHITE);
-                cartaLabel.setOpaque(true);
-                cartaLabel.setHorizontalAlignment(SwingConstants.CENTER);
             }
         } else if (carta != null) {
             File imagemFile = new File(carta.getImagem());
             if (imagemFile.exists()) {
                 cartaLabel.setIcon(new ImageIcon(imagemFile.getPath()));
-            } else {
-                Color corFundo;
-                switch (carta.getCor()) {
-                    case "Vermelho": corFundo = Color.RED; break;
-                    case "Verde": corFundo = Color.GREEN; break;
-                    case "Azul": corFundo = Color.BLUE; break;
-                    case "Amarelo": corFundo = Color.YELLOW; break;
-                    case "Preto": corFundo = Color.BLACK; break;
-                    default: corFundo = Color.GRAY;
-                }
-                cartaLabel.setText("<html>" + carta.getValor() + "<br>" + carta.getCor() + "</html>");
-                cartaLabel.setBackground(corFundo);
-                cartaLabel.setForeground(corFundo == Color.YELLOW ? Color.BLACK : Color.WHITE);
-                cartaLabel.setOpaque(true);
-                cartaLabel.setHorizontalAlignment(SwingConstants.CENTER);
             }
         }
         return cartaLabel;
