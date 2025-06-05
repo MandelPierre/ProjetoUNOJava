@@ -194,7 +194,7 @@ public class Jogo {
             return;
         }
 
-        //Painel para a carta da mesa (fixa o tamanho)
+        //Painel para a carta da mesa
         JPanel cartaMesaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         cartaMesaPanel.setOpaque(false);
         JComponent cartaMesa = criarComponenteCarta(cartaAtual, false);
@@ -212,7 +212,6 @@ public class Jogo {
         mesaPanel.add(Box.createVerticalGlue());
 
         mesaPanel.revalidate();
-        mesaPanel.repaint();
     }
 
     //Atualiza a mão do jogador
@@ -419,7 +418,7 @@ public class Jogo {
         } else if (carta.getValor().equals("Coringa")) {
             escolherCor(jogadorAtual);
         } else if (carta.getValor().equals("Reverse")) {
-            //Reverse funciona como Bloqueio para 2 jogadores
+            //Reverse funciona como Bloqueio para os 2 jogadores
             exibirMensagem("Reverse jogado! O próximo perde a vez!");
             //Se quem jogou foi o bot, ele joga novamente
             if (jogadorAtual == bot) {
