@@ -8,15 +8,15 @@ public class Jogo {
     private Jogador jogador;
     private Jogador bot;
     private Carta cartaAtual;
-    private JFrame frame;            //Janela principal
-    private JPanel maoJogadorPanel; //Mão do jogador
-    private JPanel maoBotPanel;     //Mão do bot
-    private JPanel mesaPanel;       //Painel para a carta atual
-    private JPanel mensagemPanel;   //Painel para a mensagem
-    private JLabel mensagemLabel;   //Rótulo dentro do painel de mensagem
-    private JButton comprarButton;  //Botão para comprar carta
-    private boolean bloquearProximo; //Indica se o próximo turno será bloqueado
-    private JButton gritarButton;    //Botão para gritar gol
+    private JFrame frame;
+    private JPanel maoJogadorPanel;
+    private JPanel maoBotPanel;
+    private JPanel mesaPanel;
+    private JPanel mensagemPanel;
+    private JLabel mensagemLabel;
+    private JButton comprarButton;
+    private boolean bloquearProximo;
+    private JButton gritarButton;
     private boolean jogadorGritouGol;
     private boolean botGritouGol;
 
@@ -73,9 +73,6 @@ public class Jogo {
                 if (bgFile.exists()) {
                     ImageIcon bgIcon = new ImageIcon(bgFile.getPath());
                     g.drawImage(bgIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
-                } else {
-                    g.setColor(new Color(0, 100, 0)); //Fundo verde padrão
-                    g.fillRect(0, 0, getWidth(), getHeight());
                 }
             }
         };
@@ -91,10 +88,6 @@ public class Jogo {
         File botaoFile = new File("imagens/gritarGol.png");
         if (botaoFile.exists()) {
             gritarButton = new JButton(new ImageIcon(botaoFile.getPath()));
-        } else {
-            gritarButton = new JButton("Gritar GOL");
-            gritarButton.setBackground(Color.BLACK);
-            gritarButton.setForeground(Color.WHITE);
         }
         gritarButton.setPreferredSize(new Dimension(120, 60));
         gritarButton.setMaximumSize(new Dimension(120, 60));
@@ -109,10 +102,6 @@ public class Jogo {
         File versoFile = new File("imagens/comprar.png");
         if (versoFile.exists()) {
             comprarButton = new JButton(new ImageIcon(versoFile.getPath()));
-        } else {
-            comprarButton = new JButton("Comprar");
-            comprarButton.setBackground(Color.DARK_GRAY);
-            comprarButton.setForeground(Color.WHITE);
         }
         comprarButton.setPreferredSize(new Dimension(98, 139));
         comprarButton.setMaximumSize(new Dimension(98, 139));
@@ -160,7 +149,7 @@ public class Jogo {
         //Adiciona os painéis à janela
         backgroundPanel.add(maoBotPanel, BorderLayout.NORTH);
         backgroundPanel.add(mesaPanel, BorderLayout.CENTER);
-        backgroundPanel.add(scrollPane, BorderLayout.SOUTH); //Adiciona o JScrollPane
+        backgroundPanel.add(scrollPane, BorderLayout.SOUTH);
         backgroundPanel.add(mensagemPanel, BorderLayout.WEST);
 
         // Painel auxiliar para conter o mensagemPanel e evitar que o BorderLayout estique
@@ -173,9 +162,7 @@ public class Jogo {
         gbc.fill = GridBagConstraints.NONE; // Não estica o componente
         mensagemWrapper.add(mensagemPanel, gbc);
         mensagemWrapper.add(mensagemPanel);
-
-        // Adiciona os painéis à janela
-        backgroundPanel.add(mensagemWrapper, BorderLayout.WEST); // Adiciona o wrapper ao invés do mensagemPanel diretamente
+        backgroundPanel.add(mensagemWrapper, BorderLayout.WEST);
 
         frame.setVisible(true);
     }
