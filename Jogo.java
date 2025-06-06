@@ -442,6 +442,7 @@ public class Jogo {
                 timer.start();
             }
             //Se quem jogou foi o jogador humano, ele pode jogar novamente (lógica no jogarCartaJogador)
+            
         } else if (carta.getValor().equals("FazoL")) {
             //Efeito do FazoL: rouba todas as cartas com efeito bom do adversário
             ArrayList<Carta> cartasRoubadas = new ArrayList<>();
