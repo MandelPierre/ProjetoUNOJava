@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class Jogo {
-    private Baralho baralho;
-    private Jogador jogador;
-    private Jogador bot;
+    private final Baralho baralho;
+    private final Jogador jogador;
+    private final Jogador bot;
     private Carta cartaAtual;
     private JFrame frame;
     private JPanel maoJogadorPanel;
@@ -552,7 +552,6 @@ public class Jogo {
 
     //Inicia o jogo
     public void iniciar() {
-        //O jogo já é iniciado no construtor com a interface gráfica
     }
 
     //Método principal para executar o jogo
