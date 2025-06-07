@@ -552,7 +552,6 @@ public class Jogo {
 
     //Inicia o jogo
     public void iniciar() {
-        //O jogo já é iniciado no construtor com a interface gráfica
     }
 
     //Método principal para executar o jogo
