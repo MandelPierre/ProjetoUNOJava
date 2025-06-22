@@ -86,9 +86,7 @@ public class Jogo {
 
         //Botão de Gritar GOL
         File botaoFile = new File("imagens/gritarGol.png");
-        if (botaoFile.exists()) {
-            gritarButton = new JButton(new ImageIcon(botaoFile.getPath()));
-        }
+        gritarButton = new JButton(new ImageIcon(botaoFile.getPath()));
         gritarButton.setPreferredSize(new Dimension(120, 60));
         gritarButton.setMaximumSize(new Dimension(120, 60));
         gritarButton.setEnabled(false);
